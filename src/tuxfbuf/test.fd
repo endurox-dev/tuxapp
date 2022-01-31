@@ -1,0 +1,11 @@
+
+$#ifndef __TEST_FD
+$#define __TEST_FD
+
+*base 6000
+
+T_NODE			100	short	- 1 Dest node id, ddr
+T_TX_DATA		101	string	- 1 transaction data
+T_TX_ID			102	long	- 1 Transaction id 
+
+$#endif
