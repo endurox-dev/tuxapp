@@ -6,5 +6,6 @@ This is sample project which demonstrates Oarcle Tuxedo to Enduro/X migration pr
 
 * Tuxedo install path: /opt/tuxedo12.2.2.0.0 (see tux.env)
 * Oracle DB setting (common.env)
+* Prapre DB users according to src/tlogsv/README
 
 ![Application diagram](doc/program.drawio.png?raw=true "Application diagram")
