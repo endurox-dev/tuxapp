@@ -4,9 +4,18 @@ prepare users:
 $ sqlplus / nolog
 SQL> connect / as sysdba
 SQL> alter session set "_ORACLE_SCRIPT"=true;
-SQL> CREATE USER tuxapp1 IDENTIFIED BY tuxapp1;
-SQL> GRANT CONNECT, RESOURCE, DBA TO exdbtest;
-SQL> CREATE USER tuxapp2 IDENTIFIED BY tuxapp2;
-SQL> GRANT CONNECT, RESOURCE, DBA TO exdbtest;
+SQL> CREATE USER tuxapp1 IDENTIFIED BY tuxapp11;
+SQL> GRANT CONNECT, RESOURCE, DBA TO tuxapp1;
+SQL> CREATE USER tuxapp2 IDENTIFIED BY tuxapp22;
+SQL> GRANT CONNECT, RESOURCE, DBA TO tuxapp2;
 SQL> COMMIT;
 SQL> QUIT;
+
+# run ./sqlplus1 and ./sqlplus2, for each load the tables:
+
+SQL> @tables.sql
+
+Table created.
+
+SQL> quit
+

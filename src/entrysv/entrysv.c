@@ -25,23 +25,24 @@
 void ENTRY (TPSVCINFO *p_svc)
 {
     int ret = SUCCEED;
-    UBFH *p_ub = (UBFH *)p_svc->data;
+    FBFR32 *p_ub = (FBFR32 *)p_svc->data;
     TPQCTL qc;
 
     userlog("Got call");
 
     /* allocate some stuff for more data to put in  */
-    if (NULL==(p_ub = (UBFH *)tprealloc((char *)p_ub, 4096)))
+    if (NULL==(p_ub = (FBFR32 *)tprealloc((char *)p_ub, 4096)))
     {
         ret=FAIL;
         goto out;
     }
 
+    memset(&qc, 0, sizeof(qc));
     /* enqueue to persistent Q */
-    if (EXSUCCEED!=tpenqueue("MYSPACE", "Q1", &qc, (char *)p_ub, 0L, 0))
+    if (SUCCEED!=tpenqueue("MYSPACE", "TLOG", &qc, (char *)p_ub, 0L, 0))
     {
-        userlog("tpenqueue() failed %s diag: %d:%s", 
-            tpstrerror(tperrno), qc.diagnostic, qc.diagmsg);
+        userlog("tpenqueue() failed %s diag: %d", 
+            tpstrerror(tperrno), qc.diagnostic);
         ret=FAIL;
         goto out;
     }
@@ -65,7 +66,7 @@ int tpsvrinit(int argc, char** argv)
 {
     int ret = SUCCEED;
 
-    if(SUCCEED!=tpopen())
+    if(FAIL==tpopen())
     {		
         userlog("tpopen() failed: %s",
             tpstrerror(tperrno));
@@ -74,7 +75,7 @@ int tpsvrinit(int argc, char** argv)
     }
 
     /* Advertise our service */
-    if (SUCCEED!=tpadvertise("ENTRY", ENTRY))
+    if (FAIL==tpadvertise("ENTRY", ENTRY))
     {
         userlog("Failed to advertise ENTRY: %s",
             tpstrerror(tperrno));

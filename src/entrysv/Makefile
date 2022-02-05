@@ -1,8 +1,7 @@
 SOURCES = entrysv.c
 TARGET  = entrysv
 OBJECTS = $(SOURCES:%.c=%.o)
-CFLAGS	= -I../tuxfbuf -I ../include
-#LIBS = -latmisrvinteg -latmi -lubf -lnstd -lpthread -lrt -ldl -lm
+CFLAGS  = $(shell printenv CFLAGS) -I../tuxfbuf -I ../include
 
 default: target
 

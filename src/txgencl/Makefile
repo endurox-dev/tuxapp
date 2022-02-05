@@ -1,9 +1,7 @@
-
 SOURCES = txgencl.c
 TARGET  = txgencl
 OBJECTS = $(SOURCES:%.c=%.o)
-CFLAGS	= -I../tuxfbuf -I ../include
-#LIBS = -latmiclt -latmi -lubf -lnstd -lpthread -lrt -ldl -lm
+CFLAGS	= $(shell printenv CFLAGS) -I../tuxfbuf -I ../include
 
 default: target
 

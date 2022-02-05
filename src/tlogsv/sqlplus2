@@ -1,13 +1,8 @@
 #!/bin/bash
 
 #
-# SQLPLUS for first user1
+# SQLPLUS for first user2
 #
 
-export PATH=$PATH:/u01/app/oracle/product/11.2.0/dbhome_1/bin
-export ORACLE_SID=ROCKY
-export ORACLE_HOME=/u01/app/oracle/product/11.2.0/dbhome_1
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/u01/app/oracle/product/11.2.0/dbhome_1/lib
-
-sqlplus tuxapp2/tuxapp2@$ORACLE_SID
+sqlplus tuxapp2/tuxapp22@$ORACLE_SID
 

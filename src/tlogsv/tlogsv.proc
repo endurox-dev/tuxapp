@@ -6,7 +6,7 @@
 #include <fml32.h>
 #include <userlog.h>
 #include <tuxapp.h>
-
+#include <test.fd.h>
 #include <sqlca.h> 
 
 /**
@@ -14,9 +14,8 @@
  */
 void TLOG (TPSVCINFO *p_svc)
 {
-    int ret=EXSUCCEED;
-    UBFH *p_ub = (UBFH *)p_svc->data;
-    int tran_started=EXFALSE;
+    int ret=SUCCEED;
+    FBFR32 *p_ub = (FBFR32 *)p_svc->data;
     EXEC SQL BEGIN DECLARE SECTION;
     char h_data[1024];
     long h_tid;
@@ -27,17 +26,17 @@ void TLOG (TPSVCINFO *p_svc)
     
     if (FAIL==Fget32(p_ub, T_TX_ID, 0, (char *)&h_tid, 0))
     {
-        NDRX_LOG(log_error, "Failed to get T_TX_ID: %s", 
+        userlog("Failed to get T_TX_ID: %s", 
                  Fstrerror32(Ferror32));
-        ret=EXFAIL;
+        ret=FAIL;
         goto out;
     }
 
     if (FAIL==Fget32(p_ub, T_NODE, 0, (char *)&h_node, 0))
     {
-        NDRX_LOG(log_error, "Failed to get T_NODE: %s", 
+        userlog("Failed to get T_NODE: %s", 
                  Fstrerror32(Ferror32));
-        ret=EXFAIL;
+        ret=FAIL;
         goto out;
     }
 
@@ -45,7 +44,7 @@ void TLOG (TPSVCINFO *p_svc)
     {
         userlog("Failed to get T_TX_DATA: %s", 
                  Fstrerror32(Ferror32));
-        ret=EXFAIL;
+        ret=FAIL;
         goto out;
     }
     
@@ -56,8 +55,7 @@ void TLOG (TPSVCINFO *p_svc)
     
     if (sqlca.sqlcode != 0)
     {
-        uselog("Failed to insert: %d: %.70s", 
-                sqlca.sqlcode, sqlca.sqlerrm.sqlerrmc);
+        userlog("Failed to insert: %d", sqlca.sqlcode);
         ret=FAIL;
         goto out;
     }
@@ -76,21 +74,21 @@ out:
  */
 int tpsvrinit(int argc, char **argv)
 {
-    int ret = EXSUCCEED;
+    int ret = SUCCEED;
     char *p;
 
     userlog("tpsvrinit called");
     
-    if (EXSUCCEED!=tpopen())
+    if (FAIL==tpopen())
     {
-        userlog("Failed to open DB!");
+        userlog("Failed to open DB: %s", tpstrerror(tperrno));
         ret=FAIL;
         goto out;
     }
     
-    if (EXSUCCEED!=tpadvertise("TLOG", TLOG))
+    if (FAIL==tpadvertise("TLOG", TLOG))
     {
-        userlog("Failed to initialize BALANCE!");
+        userlog("Failed to initialize TLOG");
         ret=FAIL;
         goto out;
     }

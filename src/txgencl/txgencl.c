@@ -26,21 +26,20 @@
  */
 int init(int argc, char** argv)
 {
-	int ret = SUCCEED;
+    int ret = SUCCEED;
 
-	userlog("Initializing...");
+    userlog("Initializing...");
 
-	if (SUCCEED!=tpinit(NULL))
-	{
-		userlog("Failed to Initialise: %s", 
-			tpstrerror(tperrno));
-		ret = FAIL;
-		goto out;
-	}
+    if (FAIL==tpinit(NULL))
+    {
+        userlog("Failed to Initialise: %s", tpstrerror(tperrno));
+        ret = FAIL;
+        goto out;
+    }
 
 out:
 
-	return ret;
+    return ret;
 }
 
 /**
@@ -48,13 +47,10 @@ out:
  */
 int uninit(int status)
 {
-	int ret = SUCCEED;
-	
-	userlog("Uninitialising...");
-	
-	ret = tpterm();
-	
-	return ret;
+    int ret = SUCCEED;
+    userlog("Uninitialising...");
+    tpterm();
+    return ret;
 }
 
 /**
@@ -63,54 +59,53 @@ int uninit(int status)
  */
 int process (void)
 {
-	int ret = SUCCEED;
-	FBFR32 *p_ub = NULL;
-	long rsplen;
-	BFLDLEN sz;
-	int i;
+    int ret = SUCCEED;
+    FBFR32 *p_ub = NULL;
+    long rsplen;
+    FLDLEN32 sz;
+    int i;
     long id;
     short node;
     char msg[1024];
     
     /* Call sample server... */
-    if (NULL==(p_ub = (UBFH *)tpalloc("FML32", NULL, 1024)))
+    if (NULL==(p_ub = (FBFR32 *)tpalloc("FML32", NULL, 1024)))
     {
         userlog("Failed to tpalloc: %s",  tpstrerror(tperrno));
         ret=FAIL;
         goto out;
     }
 
-    for (i=0; i<10000; i++)
+    for (i=0; i<10; i++)
     {
-        
         userlog("Processing... i=%d", i);
         
         node = i%2;
         
-        if (SUCCEED!=Fchg32(p_ub, T_NODE, 0, (char *)&node, 0L))
+        if (FAIL==Fchg32(p_ub, T_NODE, 0, (char *)&node, 0L))
         {
             userlog("Failed to set T_NODE: %s",  
-                Bstrerror(Berror));
+                Fstrerror32(Ferror32));
             ret=FAIL;
             goto out;
         }
         
         id = (long)time(NULL) + i;
         
-        if (SUCCEED!=Fchg32(p_ub, T_TX_ID, 0, (char *)&id, 0L))
+        if (FAIL==Fchg32(p_ub, T_TX_ID, 0, (char *)&id, 0L))
         {
             userlog("Failed to set T_TX_ID: %s",  
-                Bstrerror(Berror));
+                Fstrerror32(Ferror32));
             ret=FAIL;
             goto out;
         }
         
         snprintf(msg, sizeof(msg), "node: %hd, id=%ld", node, id);
         
-        if (SUCCEED!=Fchg32(p_ub, T_TX_DATA, 0, msg, 0L))
+        if (FAIL==Fchg32(p_ub, T_TX_DATA, 0, msg, 0L))
         {
             userlog("Failed to set T_TX_DATA: %s",  
-                Bstrerror(Berror));
+                Fstrerror32(Ferror32));
             ret=FAIL;
             goto out;
         }
@@ -123,18 +118,18 @@ int process (void)
         }
     }
 	
-	Fprint32(p_ub);
+    Fprint32(p_ub);
 	
 out:
 
 
-	/* free up config data... */
-	if (NULL!=p_ub)
-	{
-		tpfree((char *)p_ub);
-	}
+    /* free up config data... */
+    if (NULL!=p_ub)
+    {
+        tpfree((char *)p_ub);
+    }
 	
-	return ret;
+    return ret;
 }
 
 /**
@@ -145,25 +140,25 @@ out:
  */
 int main(int argc, char** argv)
 {
-	int ret = SUCCEED;
+    int ret = SUCCEED;
 
-	if (SUCCEED!=init(argc, argv))
-	{
-		userlog("Failed to Initialise!");
-		ret=FAIL;
-		goto out;
-	}
+    if (FAIL==init(argc, argv))
+    {
+        userlog("Failed to Initialise!");
+        ret=FAIL;
+        goto out;
+    }
 	
-	if (SUCCEED!=process())
-	{
-		userlog("Process failed!");
-		ret=FAIL;
-		goto out;
-	}
+    if (SUCCEED!=process())
+    {
+        userlog("Process failed!");
+        ret=FAIL;
+        goto out;
+    }
     
 out:
-	uninit(ret);
+    uninit(ret);
 
-	return ret;
+    return ret;
 }
 
