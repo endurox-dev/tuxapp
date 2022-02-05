@@ -61,7 +61,7 @@ To build Enduro/X version:
 
 ## Enduro/X version
 
-This includes migration step - ubbex for converting Tuxedo configuration to Enduro/X format:
+This includes migration step - ubb2ex for converting Tuxedo configuration to Enduro/X format:
 
 ```
     $ . ex.env
