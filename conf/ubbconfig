@@ -1,0 +1,127 @@
+#
+# Tuxedo config 
+#
+*RESOURCES
+IPCKEY		46000 # some sample resource
+MASTER		MACH1
+MAXACCESSERS	2000
+MAXSERVERS	1500
+MAXSERVICES	2000
+MAXGTT		1000
+MODEL		SHM
+SANITYSCAN	5
+SCANUNIT	20
+BLOCKTIME	30
+NOTIFY		SIGNAL
+LDBAL		Y
+
+*MACHINES
+"localhost.localdomain"
+	LMID=MACH1
+	TUXDIR="/opt/tuxedo12.2.2.0.0"
+        APPDIR="/tuxapp/bin"
+        TUXCONFIG="/tuxapp/conf/tuxconfig"
+        ULOGPFX="/tuxapp/log/ULOG"
+        TLOGDEVICE="/tuxapp/conf/TLOG"
+        ENVFILE="/tuxapp/conf/env.txt" 
+        TLOGSIZE=1000
+        MAXWSCLIENTS=300
+
+*GROUPS
+
+ADMINGRP
+	LMID=MACH1
+	GRPNO=1
+		
+NULLGRP
+	LMID=MACH1
+	GRPNO=2
+	TMSNAME=TMS
+
+#TLOG1
+ORAGRP1
+	LMID=MACH1
+	GRPNO=5
+	TMSNAME=TMS_ORA1
+	TMSCOUNT=2
+	OPENINFO="Oracle_XA:ORACLE_XA+SqlNet=XE+ACC=P/tuxapp1/tuxapp11+SesTM=10+LogDir=/tuxapp/log+Threads=true"
+	CLOSEINFO="Oracle_XA:CLOSE_STR"
+		
+#TLOG2
+ORAGRP2
+	LMID=MACH1
+	GRPNO=6
+	TMSNAME=TMS_ORA1
+	TMSCOUNT=2
+	OPENINFO="Oracle_XA:ORACLE_XA+SqlNet=XE+ACC=P/tuxapp2/tuxapp22+SesTM=10+LogDir=/tuxapp/log+Threads=true"
+	CLOSEINFO="Oracle_XA:CLOSE_STR"
+
+QGRP1	LMID=MACH1
+	GRPNO=8
+	TMSNAME=TMS_QM
+	TMSCOUNT=2
+	OPENINFO="TUXEDO/QM:/tuxapp/conf/myspace:MYSPACE"
+
+#
+# Servers section
+#
+*SERVERS
+
+DEFAULT:	CLOPT="-A"
+
+# have events
+TMSYSEVT	SRVGRP=ADMINGRP
+		SRVID=10
+		RESTART=N
+		GRACE=900
+		CLOPT="-A --"
+
+TMUSREVT        SRVGRP=ADMINGRP
+                SRVID=20
+                RESTART=N
+                GRACE=900
+                CLOPT="-A --"
+
+DEFAULT:	SRVGRP=QGRP1
+		RESTART=N
+		REPLYQ=N
+		CLOPT="-A"
+
+# Persistent Q space - MYSPACE
+TMQUEUE     	SRVID=40
+		REPLYQ=Y
+		CLOPT="-A -s MYSPACE:TMQUEUE -- "
+
+#
+# Have some user processes
+#
+DEFAULT:	SRVGRP=NULLGRP
+		MIN=1
+		MAX=5
+		REPLYQ=Y
+		RESTART=N
+		CLOPT="-A"
+
+"entrysv"	SRVID=100 MIN=5 MAX=5 CLOPT="-A --"
+"tlogsv"	SRVGRP="ORAGRP1" SRVID=200 MIN=5 MAX=5 CLOPT="-A --"
+"tlogsv"	SRVGRP="ORAGRP2" SRVID=300 MIN=5 MAX=5 CLOPT="-A --"
+
+DEFAULT:	SRVGRP=QGRP1
+
+# Forward the messages to TLOGs, do some routing
+TMQFORWARD  	SRVID=1120 MIN=1 MAX=1 CLOPT="-A -- -i 2 -qTLOG -t60"
+		REPLYQ=N
+
+*SERVICES   
+
+DEFAULT:
+	TRANTIME=60
+
+ENTRY	AUTOTRAN=Y
+# Q output is routed to TLOG
+TLOG 	AUTOTRAN=Y ROUTING=ROUT1 
+
+*ROUTING
+
+ROUT1	FIELD=T_NODE	BUFTYPE="FML32"  FIELDTYPE=SHORT
+		RANGES="0:ORAGRP1,1:ORAGRP2"
