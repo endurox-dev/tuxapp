@@ -78,4 +78,8 @@ This includes migration step - ubbex for converting Tuxedo configuration to Endu
     SQL> select count(*) from tlog;
 ```
 
+# Application
+
+Given application demonstrates XATMI client which calls XATMI server, which enqueues message to persistent queue. The persistent queue is forwarded to "TLOG" service. "TLOG" service adds records in Oracle DB table "TLOG". There are two servers tlogsv where each is connected to Oracle DB to different schemas. The target server is selected by DDR route. Do not confuse, in this example "TLOG" queue/service/table is not related to Tuxedo internal TLOG which is used for XA transaction tracking. 
+
 ![Application diagram](doc/program.drawio.png?raw=true "Application diagram")
