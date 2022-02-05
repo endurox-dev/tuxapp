@@ -11,7 +11,7 @@ This is sample project which demonstrates Oarcle Tuxedo to Enduro/X migration pr
 
 # Building
 
-## Tuxeod version
+## Tuxedo version
 
 To build Tuxedo version:
 
