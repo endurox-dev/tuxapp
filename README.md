@@ -7,6 +7,11 @@ This is sample project which demonstrates Oarcle Tuxedo to Enduro/X migration pr
 * Tuxedo install path: /opt/tuxedo12.2.2.0.0 (see tux.env)
 * Oracle DB setting (common.env)
 * Prapre DB users according to src/tlogsv/README
+* Demo is prepared on Centos 8 Linux, Oracle XE 18 database used
+
+# Building
+
+## Tuxeod version
 
 To build Tuxedo version:
 
@@ -16,8 +21,11 @@ To build Tuxedo version:
 ```
     $ . tux.env
     $ cd src
+    $ make clean
     $ make
 ```
+
+## Enduro/X version
 
 To build Enduro/X version:
 * Install Enduro/X accordingly:
@@ -29,7 +37,45 @@ To build Enduro/X version:
 ```
     $ . ex.env
     $ cd src
+    $ make clean
     $ make
+```
+
+# Running 
+
+## Tuxedo version
+
+```
+    $ . tux.env
+    $ cd conf
+    -- See "README" for details to create TLOG device & QSPACE for first time
+    $ tmloadcf -b 30000 ubbconfig -y
+    $ tmboot -y
+    $ txgencl
+    -- Check databases:
+    $ sqlplus1
+    SQL> select count(*) from tlog;
+    $ sqlplus2
+    SQL> select count(*) from tlog;
+```
+
+## Enduro/X version
+
+This includes migration step - ubbex for converting Tuxedo configuration to Enduro/X format:
+
+```
+    $ . ex.env
+    $ cd conf
+    -- Convert Tuxedo config to Enduro/X, first time:
+    $ ubb2ex ubbconfig
+    $ . setmach1
+    $ xadmin start -y
+    $ txgencl
+    -- Check databases:
+    $ sqlplus1
+    SQL> select count(*) from tlog;
+    $ sqlplus2
+    SQL> select count(*) from tlog;
 ```
 
 ![Application diagram](doc/program.drawio.png?raw=true "Application diagram")
