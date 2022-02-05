@@ -72,8 +72,6 @@ int process (void)
     short node;
     char msg[1024];
     
-	
-    
     /* Call sample server... */
     if (NULL==(p_ub = (UBFH *)tpalloc("FML32", NULL, 1024)))
     {

@@ -1,0 +1,110 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+
+#include <atmi.h>
+#include <fml32.h>
+#include <userlog.h>
+#include <tuxapp.h>
+
+#include <sqlca.h> 
+
+/**
+ * This service will make an account
+ */
+void TLOG (TPSVCINFO *p_svc)
+{
+    int ret=EXSUCCEED;
+    UBFH *p_ub = (UBFH *)p_svc->data;
+    int tran_started=EXFALSE;
+    EXEC SQL BEGIN DECLARE SECTION;
+    char h_data[1024];
+    long h_tid;
+    short h_node;
+    EXEC SQL END DECLARE SECTION;
+    
+    userlog("%s got call", __func__);
+    
+    if (FAIL==Fget32(p_ub, T_TX_ID, 0, (char *)&h_tid, 0))
+    {
+        NDRX_LOG(log_error, "Failed to get T_TX_ID: %s", 
+                 Fstrerror32(Ferror32));
+        ret=EXFAIL;
+        goto out;
+    }
+
+    if (FAIL==Fget32(p_ub, T_NODE, 0, (char *)&h_node, 0))
+    {
+        NDRX_LOG(log_error, "Failed to get T_NODE: %s", 
+                 Fstrerror32(Ferror32));
+        ret=EXFAIL;
+        goto out;
+    }
+
+    if (FAIL==Fget32(p_ub, T_TX_DATA, 0, h_data, 0))
+    {
+        userlog("Failed to get T_TX_DATA: %s", 
+                 Fstrerror32(Ferror32));
+        ret=EXFAIL;
+        goto out;
+    }
+    
+    EXEC SQL INSERT INTO tlog(id, node, data)
+        VALUES(:h_tid, :h_node, :h_data);
+    
+    userlog("Result: %d", sqlca.sqlcode);
+    
+    if (sqlca.sqlcode != 0)
+    {
+        uselog("Failed to insert: %d: %.70s", 
+                sqlca.sqlcode, sqlca.sqlerrm.sqlerrmc);
+        ret=FAIL;
+        goto out;
+    }
+    
+out:
+        
+    tpreturn(  ret==SUCCEED?TPSUCCESS:TPFAIL,
+                0L,
+                (char *)p_ub,
+                0L,
+                0L);
+}
+
+/**
+ * Do initialization
+ */
+int tpsvrinit(int argc, char **argv)
+{
+    int ret = EXSUCCEED;
+    char *p;
+
+    userlog("tpsvrinit called");
+    
+    if (EXSUCCEED!=tpopen())
+    {
+        userlog("Failed to open DB!");
+        ret=FAIL;
+        goto out;
+    }
+    
+    if (EXSUCCEED!=tpadvertise("TLOG", TLOG))
+    {
+        userlog("Failed to initialize BALANCE!");
+        ret=FAIL;
+        goto out;
+    }
+    
+out:
+    return ret;
+}
+
+/**
+ * Do de-initialization
+ */
+void tpsvrdone(void)
+{
+    userlog("tpsvrdone called");
+    tpclose();
+}
+

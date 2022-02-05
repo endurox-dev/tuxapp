@@ -26,6 +26,7 @@ void ENTRY (TPSVCINFO *p_svc)
 {
     int ret = SUCCEED;
     UBFH *p_ub = (UBFH *)p_svc->data;
+    TPQCTL qc;
 
     userlog("Got call");
 
@@ -36,17 +37,14 @@ void ENTRY (TPSVCINFO *p_svc)
         goto out;
     }
 
-/*
-	if (FAIL==Badd(p_ub, T_STRING_2_FLD, "Hello World from XATMI server", 0L))
-	{
-		ret=FAIL;
-		goto out;
-	}
-*/
-
-    /* TODO: tpenqueue() to "ENTRYQ0" or "ENTRYQ1" 
-     * these are auto-q, forwards to T 
-     */
+    /* enqueue to persistent Q */
+    if (EXSUCCEED!=tpenqueue("MYSPACE", "Q1", &qc, (char *)p_ub, 0L, 0))
+    {
+        userlog("tpenqueue() failed %s diag: %d:%s", 
+            tpstrerror(tperrno), qc.diagnostic, qc.diagmsg);
+        ret=FAIL;
+        goto out;
+    }
 
 out:
 
@@ -55,7 +53,6 @@ out:
         (char *)p_ub,
         0L,
         0L);
-
 }
 
 /**
