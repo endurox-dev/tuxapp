@@ -20,6 +20,7 @@ To build Tuxedo version:
 To build Enduro/X version:
 * Install Enduro/X accordingly
 * Then:
+
     $ . ex.env
     $ cd src
     $ make
