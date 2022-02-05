@@ -1,0 +1,12 @@
+prepare users:
+
+# su - oracle
+$ sqlplus / nolog
+SQL> connect / as sysdba
+SQL> alter session set "_ORACLE_SCRIPT"=true;
+SQL> CREATE USER tuxapp1 IDENTIFIED BY tuxapp1;
+SQL> GRANT CONNECT, RESOURCE, DBA TO exdbtest;
+SQL> CREATE USER tuxapp2 IDENTIFIED BY tuxapp2;
+SQL> GRANT CONNECT, RESOURCE, DBA TO exdbtest;
+SQL> COMMIT;
+SQL> QUIT;
