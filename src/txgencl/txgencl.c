@@ -9,14 +9,9 @@
 #include <fml32.h>
 #include <test.fd.h>
 #include <tuxapp.h>
-/*---------------------------Externs------------------------------------*/
-/*---------------------------Macros-------------------------------------*/
-/*---------------------------Enums--------------------------------------*/
-/*---------------------------Typedefs-----------------------------------*/
-/*---------------------------Globals------------------------------------*/
-/*---------------------------Statics------------------------------------*/
-/*---------------------------Prototypes---------------------------------*/
 
+/** Number of messages to be submitted */
+static int M_count=100;
 
 /**
  * Initialise the application
@@ -28,7 +23,10 @@ int init(int argc, char** argv)
 {
     int ret = SUCCEED;
 
-    userlog("Initializing...");
+    if (argc>1)
+    {
+        M_count=atoi(argv[1]);
+    }
 
     if (FAIL==tpinit(NULL))
     {
@@ -76,7 +74,7 @@ int process (void)
         goto out;
     }
 
-    for (i=0; i<10; i++)
+    for (i=0; i<M_count; i++)
     {
         userlog("Processing... i=%d", i);
         
@@ -116,9 +114,10 @@ int process (void)
             ret=FAIL;
             goto out;
         }
+
+        Fprint32(p_ub);
+
     }
-	
-    Fprint32(p_ub);
 	
 out:
 
