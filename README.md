@@ -66,7 +66,7 @@ This includes migration step - ubbex for converting Tuxedo configuration to Endu
 ```
     $ . ex.env
     $ cd conf
-    -- Convert Tuxedo config to Enduro/X, first time:
+    -- Convert Tuxedo config to Enduro/X, first time (this generates setmatch1, mach1.ini, :
     $ ubb2ex ubbconfig
     $ . setmach1
     $ xadmin start -y
