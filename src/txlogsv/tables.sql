@@ -1,4 +1,4 @@
-CREATE TABLE tlog
+CREATE TABLE txlog
 (
 	id number(10,0)	NOT NULL,
         node number(5,0) NOT NULL,

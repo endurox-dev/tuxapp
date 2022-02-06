@@ -29,7 +29,7 @@ export QMCONFIG=/tuxapp/conf/myspace
 echo "crdl $QMCONFIG 0 4000" | qmadmin 
 echo "qspc MYSPACE 33211 2000 3 5 5 100 ERROR y 16" | qmadmin
 echo -e "qopen MYSPACE\nqcr ERROR time none 0 0 100% 0% ''" | qmadmin 
-echo -e "qopen MYSPACE\nqcr TLOG time none 3 5 100% 0% ''" | qmadmin 
+echo -e "qopen MYSPACE\nqcr TXLOG time none 3 5 100% 0% ''" | qmadmin 
 
 )
 

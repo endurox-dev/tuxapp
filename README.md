@@ -6,7 +6,7 @@ This is sample project which demonstrates Oracle Tuxedo to Enduro/X migration pr
 
 * Tuxedo install path: /opt/tuxedo12.2.2.0.0 (see tux.env)
 * Oracle DB setting (common.env)
-* Prapre DB users according to src/tlogsv/README
+* Prapre DB users according to src/txlogsv/README
 * Demo is prepared on Centos 8 Linux, Oracle 18 XE database used
 
 # Building
@@ -55,9 +55,9 @@ To build Enduro/X version:
     $ txgencl
     -- Check databases:
     $ sqlplus1
-    SQL> select count(*) from tlog;
+    SQL> select count(*) from txlog;
     $ sqlplus2
-    SQL> select count(*) from tlog;
+    SQL> select count(*) from txlog;
 ```
 
 ## Enduro/X version
@@ -74,13 +74,13 @@ This includes migration step - ubb2ex for converting Tuxedo configuration to End
     $ txgencl
     -- Check databases:
     $ sqlplus1
-    SQL> select count(*) from tlog;
+    SQL> select count(*) from txlog;
     $ sqlplus2
-    SQL> select count(*) from tlog;
+    SQL> select count(*) from txlog;
 ```
 
 # Application
 
-Given application demonstrates XATMI client which calls XATMI server, which enqueues message to persistent queue. The persistent queue is forwarded to "TLOG" service. "TLOG" service adds records in Oracle DB table "TLOG". There are two servers tlogsv where each is connected to Oracle DB to different schemas. The target server is selected by DDR route. Do not confuse, in this example "TLOG" queue/service/table is not related to Tuxedo internal TLOG which is used for XA transaction tracking. 
+Given application demonstrates XATMI client which calls XATMI server, which enqueues message to persistent queue. The persistent queue is forwarded to "TXLOG" service. "TXLOG" service adds records in Oracle DB table "TXLOG". There are two servers txlogsv where each is connected to Oracle DB to different schemas. The target server is selected by DDR route. Do not confuse, in this example "TXLOG" queue/service/table refer to business transactions log and is not related to Tuxedo internal TLOG which is used for XA transaction tracking. 
 
 ![Application diagram](doc/program.drawio.png?raw=true "Application diagram")

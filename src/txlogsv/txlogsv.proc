@@ -12,7 +12,7 @@
 /**
  * This service will make an account
  */
-void TLOG (TPSVCINFO *p_svc)
+void TXLOG (TPSVCINFO *p_svc)
 {
     int ret=SUCCEED;
     FBFR32 *p_ub = (FBFR32 *)p_svc->data;
@@ -48,7 +48,7 @@ void TLOG (TPSVCINFO *p_svc)
         goto out;
     }
     
-    EXEC SQL INSERT INTO tlog(id, node, data)
+    EXEC SQL INSERT INTO txlog(id, node, data)
         VALUES(:h_tid, :h_node, :h_data);
     
     userlog("Result: %d", sqlca.sqlcode);
@@ -86,9 +86,9 @@ int tpsvrinit(int argc, char **argv)
         goto out;
     }
     
-    if (FAIL==tpadvertise("TLOG", TLOG))
+    if (FAIL==tpadvertise("TXLOG", TXLOG))
     {
-        userlog("Failed to initialize TLOG");
+        userlog("Failed to initialize TXLOG");
         ret=FAIL;
         goto out;
     }

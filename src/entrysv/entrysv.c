@@ -31,7 +31,7 @@ void ENTRY (TPSVCINFO *p_svc)
 
     memset(&qc, 0, sizeof(qc));
     /* enqueue to persistent Q */
-    if (SUCCEED!=tpenqueue("MYSPACE", "TLOG", &qc, (char *)p_ub, 0L, 0))
+    if (SUCCEED!=tpenqueue("MYSPACE", "TXLOG", &qc, (char *)p_ub, 0L, 0))
     {
         userlog("tpenqueue() failed %s diag: %d", 
             tpstrerror(tperrno), qc.diagnostic);
