@@ -100,7 +100,7 @@ DEFAULT:	SRVGRP=NULLGRP
 		REPLYQ=Y
 		RESTART=Y
 
-"entrysv"	SRVID=100 MIN=5 MAX=5 CLOPT="-A --"
+"entrysv"	SRVID=100 MIN=5 MAX=5 CLOPT="-A -e /tuxapp/log/entrysv.log --"
 
 DEFAULT:	SRVGRP=ORAGRP1
 "txlogsv"	SRVID=200 MIN=5 MAX=5 CLOPT="-A --"
