@@ -48,8 +48,9 @@ To build Enduro/X version:
 ```
     $ . tux.env
     $ cd conf
-    -- See "README" for details to create TLOG device & QSPACE for first time
     $ tmloadcf -b 30000 ubbconfig -y
+    -- For first run TLOG & myspace shall be created, use script:
+    $ ./tux_first.sh
     $ tmboot -y
     $ txgencl
     -- Check databases:
