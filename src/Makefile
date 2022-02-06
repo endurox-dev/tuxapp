@@ -2,9 +2,6 @@
 # Master build project
 #
 
-# Silent debug for Enduro/X (in case of building for)
-export NDRX_DEBUG_CONF=
-
 all:
 	make -C tuxfbuf
 	make -C txgencl
