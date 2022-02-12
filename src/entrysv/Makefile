@@ -1,7 +1,7 @@
 SOURCES = entrysv.c
 TARGET  = entrysv
 OBJECTS = $(SOURCES:%.c=%.o)
-CFLAGS  = $(shell printenv CFLAGS) -I../tuxfbuf -I ../include
+CFLAGS  = $(shell printenv CFLAGS) -I../fml32 -I ../include
 
 default: target
 
